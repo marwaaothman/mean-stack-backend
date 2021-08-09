@@ -28,8 +28,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["MANAGER", "WORKER", "ADMIN"],
         required: true
-        },
-});
+        }     
+},
+{
+  timestamp:true
+}
+);
 // Custom validation for email
 userSchema.path('email').validate((val) => {
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -44,6 +48,21 @@ userSchema.pre('save', async function(next) {
 	next();
 });
 
+/*userSchema.pre('save', function(next){
+
+  var user = this; // this refers to UserSchema object
+
+  var currentDate = new Date();
+
+  // change the updated_at field to current date
+  user.updated_at = currentDate;
+
+  // if created_at doesn't exist, add to that field
+  // otherwise, only update_at will be set to current date
+  if (!user.created_at) {
+     user.created_at = currentDate;
+  }
+});*/
 
 const User= mongoose.model("User", userSchema);
 module.exports = User;

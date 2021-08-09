@@ -6,7 +6,6 @@ const projectSchema = new mongoose.Schema({
     Start_Date:{  type: Date},
     End_Date:{  type: Date },
     description:{  type: String },
-
     manager: [{
         type: mongoose.Types.ObjectId,
         ref: 'user'
@@ -20,7 +19,7 @@ const projectSchema = new mongoose.Schema({
         ref: 'task'
     }], */
 }
-     
+     // status , priority,tags,files,created_at,updated_at,
 );
 const Project= mongoose.model("Project", projectSchema);
 module.exports= Project ;

@@ -1,18 +1,17 @@
 const express = require('express');
 const Project  = require('../models/project');
 const auth = require('../middleware/verifyToken');
-/*const User  = require('../models/user');*/
 var ObjectId = require('mongoose').Types.ObjectId;
 const projectRouter = express.Router();
 
 
- projectRouter.get('/',auth ,(req, res) => {
+ projectRouter.get('/',(req, res) => {
     Project.find((err, docs) => {
         if (!err) { res.send(docs); }
        else { console.log('Error in Retriving Projects:' + JSON.stringify(err, undefined, 2)); }
     });
 });
-
+// ajouter  auth 
 projectRouter.get('/:id', async (req, res) => {
     try {
         const project = await Project.findById(req.params.id);
@@ -36,7 +35,6 @@ projectRouter.get('/:id', async (req, res) => {
     });*/
 // this post
     projectRouter.post('/', (req, res) => {
-
        /*var manager_id = req.decoded._id;*/
         const project = new Project({
             title: req.body.title,
@@ -92,8 +90,8 @@ projectRouter.get('/:id', async (req, res) => {
 /*
 
       //-----------------------------------------------------
-//   Get Projects
-//-----------------------------------------------------
+//   Get Projects//
+
 projectRouter.get('/all', function(req, res) {
 
 	var user_id = req.decoded._id;

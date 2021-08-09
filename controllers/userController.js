@@ -79,13 +79,13 @@ userRouter.patch('/:id', (req, res) => {
     if (!ObjectId.isValid(req.params.id))
         return res.status(400).send(`No record with given id : ${req.params.id}`);
 
-    
     User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, (err, doc) => {
-        if (!err) { res.send(doc); }
+        if (!err) 
+        { res.send(doc); 
+            console.log("user is modified!!");}
         else { console.log('Error in User  Update :' + JSON.stringify(err, undefined, 2)); }
     });
 });
-
  // create team for user
         //------------------------
       /*  if(req.body.role=="MANAGER"){
@@ -108,7 +108,7 @@ userRouter.patch('/:id', (req, res) => {
     res.json({ success: true, message: 'User has been created !'});*/
 
 
-/* userRouter.post('/', (req, res) => {
+ /*userRouter.post('/', async(req, res) => {
    const user = new User({
         nom: req.body.nom,
         prenom: req.body.prenom,
@@ -116,14 +116,23 @@ userRouter.patch('/:id', (req, res) => {
         experience: req.body.experience,
         type_contrat: req.body.type_contrat,
         date_entree: req.body.date_entree,
-
-
         stack_principale: req.body.stack_principale,
         stack_secondaire: req.body.stack_secondaire,
 
     });
    user.save()
   
-});*/
+});
+*/
+userRouter.post('/',async(req,res)=> {
+   const user = new User(req.body);
+   try{
+       await user.save();
+       res.status(201).send(user);
+   }catch (error){
+       res.status(580).send(error);
+   }
+   
+   });
 
 module.exports = userRouter ;
