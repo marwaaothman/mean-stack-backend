@@ -13,7 +13,8 @@ const projectSchema = new mongoose.Schema({
     assignee: [{
         type: mongoose.Types.ObjectId,
         ref: 'user'
-    }]
+    }],
+    
    /* tasks: [{
         type: mongoose.Types.ObjectId,
         ref: 'task'

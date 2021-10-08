@@ -26,9 +26,9 @@ const userSchema = new mongoose.Schema({
       },
       role: {
         type: String,
-        enum: ["MANAGER", "WORKER", "ADMIN"],
-        required: true
-        }     
+        enum: ["Responsable de pole", "Agent", "Admin"],
+        }, 
+        token:{ type:String}  
 },
 {
   timestamp:true
@@ -39,7 +39,7 @@ userSchema.path('email').validate((val) => {
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return emailRegex.test(val);
 }, 'Invalid e-mail.');
-
+ /*
 userSchema.pre('save', async function(next) {
 	const user = this;
 	if (user.isModified('password')) {
@@ -47,7 +47,7 @@ userSchema.pre('save', async function(next) {
 	}
 	next();
 });
-
+*/
 /*userSchema.pre('save', function(next){
 
   var user = this; // this refers to UserSchema object

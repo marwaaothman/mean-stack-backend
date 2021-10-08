@@ -87,19 +87,19 @@ projectRouter.get('/:id', async (req, res) => {
 
 
    
-/*
+
 
       //-----------------------------------------------------
 //   Get Projects//
-
+/*
 projectRouter.get('/all', function(req, res) {
 
 	var user_id = req.decoded._id;
 	console.log("get all project for user: " + user_id);
 
 	Project.find( {manager: user_id})
-	.populate('assignee',['_id', 'first_name', 'last_name', 'email'])
-  .populate('manager',['_id', 'first_name', 'last_name', 'email'])
+	.populate('assignee',['_id', 'nom', 'prenom', 'email'])
+  .populate('manager',['_id', 'nom', 'prenom', 'email'])
 	.exec(function(err, projects) {
 
 		if(err) {
@@ -109,5 +109,49 @@ projectRouter.get('/all', function(req, res) {
 		}
 		res.json(projects);
 	});
-});*/
+});
+
+
+
+projectRouter.post('/add', function(req, res, next) {
+   
+      var manager_id = req.decoded._id;
+    var manager= req.decoded.nom+" "+req.decoded.prenom;
+  
+         var projet = new Project({
+            title: req.body.title,
+            budget: req.body.budget,
+            Start_Date: req.body.Start_Date,
+            End_Date: req.body.End_Date,
+            description: req.body.description,
+            manager:manager_id,
+            assignee:req.body.assignee,
+              
+      });
+  
+      projet.save(function(err, savedProject) {
+          if(err) {
+              console.log("project save error: " + err);
+              res.send(err);
+              return;
+          }
+          var assignee_id = savedProject.assignee;
+          var project_id  = savedProject._id;
+  
+          User.findOne({_id:assignee_id})
+          .exec(function(err, assignee) {
+  
+            if(err) {
+            // res.send(err);
+              console.log('error while finding the assignee data '+err);
+              return;
+              }
+  
+              sendAssigneeEmail(req, manager, assignee, savedProject, tokenMaker.createProjectToken(assignee_id, project_id));
+                res.json({ success: true, message: 'Project created !', project: project});
+  
+          }); // find user(assignee)
+      }); // save project
+  }); // a
+  */
     module.exports = projectRouter ;

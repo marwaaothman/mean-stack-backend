@@ -21,11 +21,14 @@ if(emailExist) return res.status(400).send('email already exists');
 const user = new User(req.body);
 try{
     await user.save();
-    res.status(201).send(user);
+   
+    const token = jwt.sign({_id: user.id}, process.env.TOKEN_SECRET);
+    
+    user.token = token;
+     res.status(201).json(user);
 }catch (error){
     res.status(580).send(error);
 }
-
 });
 
 userRouter.post('/login',async(req,res)=> {
@@ -35,11 +38,14 @@ userRouter.post('/login',async(req,res)=> {
 
 const validPass = await bcrypt.compare(req.body.password, user.password);
 if(!validPass) return res.status(400).send('invalid password');
-// create a token 
+//create a token 
 const token = jwt.sign({_id: user.id}, process.env.TOKEN_SECRET);
-res.header('auth-token',token).send(token);
+//res.header('auth-token',token).send(token); 
+     res.json({token});
 
     });
+
+
 
 userRouter.get('/:id', async (req, res) => {
     try {
@@ -135,4 +141,36 @@ userRouter.post('/',async(req,res)=> {
    
    });
 
+   userRouter.get("/search/:name"),function(req,res){
+    var regex= new RegExp(req.params.name,'i');
+    User.find({name:regex}).then((result)=>{
+        res.status(200).json(result)
+    })
+}
+userRouter.get("/"),(function (req, res) {
+
+    var userQuery = User.find();
+
+    var queryparams = req.query;
+
+    if (queryparams.searchKey) {
+        userQuery.or([
+            { 'nom': { $regex: queryparams.searchKey, $options: 'i' } },
+            { 'prenom': { $regex: queryparams.searchKey, $options: 'i' } }]);
+    }
+
+    if (queryparams.sortKey) {
+        userQuery.sort([[queryparams.sortKey, 1]]);
+    }
+
+    userQuery.exec(function (err, users) {
+
+        if (err) {
+            res.json({ 'Success': false })
+        }
+        else {
+            res.json({ 'Success': true, 'Data': users });
+        }
+    });
+});
 module.exports = userRouter ;
